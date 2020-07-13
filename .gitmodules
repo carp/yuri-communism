@@ -1,0 +1,3 @@
+[submodule "anime-face-detector"]
+	path = anime-face-detector
+	url = https://github.com/qhgz2013/anime-face-detector
