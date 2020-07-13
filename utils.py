@@ -4,31 +4,46 @@ from shapely.geometry import Polygon
 import cv2
 import os.path
 import random
-import subprocess 
+import subprocess
 import json
 from colorthief import ColorThief
 
+
 def draw_with_border(x, y, message, color_fill, color_border, font, draw):
     border_width = max((font.size // 25), 2)
-    
 
-    for i in range(1,border_width+1):
-        draw.text((x,y+i), message, fill=color_border, font=font)
-        draw.text((x,y-i), message, fill=color_border, font=font)
-        draw.text((x+i,y), message, fill=color_border, font=font)
-        draw.text((x-i,y), message, fill=color_border, font=font)
+    for i in range(1, border_width + 1):
+        draw.text((x, y + i), message, fill=color_border, font=font)
+        draw.text((x, y - i), message, fill=color_border, font=font)
+        draw.text((x + i, y), message, fill=color_border, font=font)
+        draw.text((x - i, y), message, fill=color_border, font=font)
 
-        draw.text((x-i,y-i), message, fill=color_border, font=font)
-        draw.text((x-i,y+i), message, fill=color_border, font=font)
-        draw.text((x+i,y-i), message, fill=color_border, font=font)
-        draw.text((x+i,y+i), message, fill=color_border, font=font)
+        draw.text((x - i, y - i), message, fill=color_border, font=font)
+        draw.text((x - i, y + i), message, fill=color_border, font=font)
+        draw.text((x + i, y - i), message, fill=color_border, font=font)
+        draw.text((x + i, y + i), message, fill=color_border, font=font)
 
     draw.text((x, y), message, fill=color_fill, font=font)
 
 
 def detect(filename):
-    result = subprocess.run(['conda',"activate","detection","&&","python", 'anime-face-detector/main.py ',"-i",filename,"-o","output.json"],shell=True,stdout=subprocess.DEVNULL)
-    with open("output.json","r") as f:
+    result = subprocess.run(
+        [
+            "conda",
+            "activate",
+            "detection",
+            "&&",
+            "python",
+            "anime-face-detector/main.py ",
+            "-i",
+            filename,
+            "-o",
+            "output.json",
+        ],
+        shell=True,
+        stdout=subprocess.DEVNULL,
+    )
+    with open("output.json", "r") as f:
         output = json.load(f)
         print(output)
     return [f["bbox"] for f in output[filename]]
@@ -96,7 +111,7 @@ def randomize_location(image, messages, font):
     placed = False
     tries = 0
     faces = detect(image.filename)
-    print("faces found:",len(faces))
+    print("faces found:", len(faces))
     while placed is False and tries < 20:
         placed = True
         x = random.randrange(0, image_size[0] - x_coordinate)
@@ -105,7 +120,7 @@ def randomize_location(image, messages, font):
             if is_intersected(face, (x, y, x + x_coordinate, y + y_coordinate)):
                 placed = False
         tries = tries + 1
-    print("tried:",tries)
+    print("tried:", tries)
     return (x, y, len(faces))
 
 

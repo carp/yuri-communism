@@ -13,6 +13,7 @@ import random
 import os
 from api import consumer_key, consumer_secret, access_token, access_token_secret
 from datetime import datetime
+
 twitter = Twython(consumer_key, consumer_secret, access_token, access_token_secret)
 
 
@@ -31,7 +32,9 @@ def post():
     lines = messages_multiline(text, font, image)  # split up lines for text wrapping
     colors = get_colors(image.filename)  # get colors
 
-    (x, y,faces) = randomize_location(image, lines, font)  # where to start drawing text
+    (x, y, faces) = randomize_location(
+        image, lines, font
+    )  # where to start drawing text
 
     for line in lines:
         height = font.getsize(line[1])[1]
@@ -46,7 +49,10 @@ def post():
     twitter.update_status(status=message, media_ids=[response["media_id"]])
     photo.close()
     os.remove(photo.name)
-    with open("log","a") as f:
-        f.write(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}\t{filename}\t({image.size[0]} {image.size[1]})\t{font.size} ({max((font.size // 25), 2)})\t{text}\n")
+    with open("log", "a") as f:
+        f.write(
+            f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}\t{filename}\t({image.size[0]} {image.size[1]})\t{font.size} ({max((font.size // 25), 2)})\t{text}\n"
+        )
+
 
 post()
