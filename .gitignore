@@ -1,6 +1,5 @@
-pics/
+pics/*[.png,.jpg,.jpeg]
 .vscode/
 __pycache__/
 api.py
 .ipynb_checkpoints/
-files.csv
